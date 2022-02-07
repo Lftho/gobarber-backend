@@ -1,14 +1,8 @@
 import { Router } from 'express';
-import { uuid } from 'uuidv4';
 import { startOfHour, parseISO, isEqual } from 'date-fns';
+import Agendamento from '../models/Agendamento';
 
 const agendamentosRouter = Router();
-
-interface Agendamento {
-  id: string;
-  fornecedor: string;
-  data: Date;
-}
 
 const agendamentos: Agendamento[] = [];
 
@@ -29,11 +23,7 @@ agendamentosRouter.post('/', (request, response) => {
       });
   }
 
-  const agendamento = {
-    id: uuid(),
-    fornecedor,
-    data: novaData,
-  };
+  const agendamento = new Agendamento(fornecedor, novaData);
 
   agendamentos.push(agendamento);
 
