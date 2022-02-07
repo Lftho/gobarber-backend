@@ -1,21 +1,19 @@
 import { Router } from 'express';
-import { startOfHour, parseISO, isEqual } from 'date-fns';
-import Agendamento from '../models/Agendamento';
+import { startOfHour, parseISO } from 'date-fns';
+import AgendamentosRepository from '../repositories/AgendamentosRepository';
 
 const agendamentosRouter = Router();
-
-const agendamentos: Agendamento[] = [];
+const agendamentosRepository = new AgendamentosRepository();
 
 agendamentosRouter.post('/', (request, response) => {
   const { fornecedor, data } = request.body;
 
   const novaData = startOfHour(parseISO(data));
-  const encontraraAgendamentoNaMesmaData =
-    agendamentos.find(
-      agendamento => isEqual(novaData, agendamento.data)
-    )
 
-  if (encontraraAgendamentoNaMesmaData) {
+  const encontrarAgendamentoNaMesmaData =
+    agendamentosRepository.encontrarUmaDataEspecifica(novaData);
+
+  if (encontrarAgendamentoNaMesmaData) {
     return response
       .status(400)
       .json({
@@ -23,9 +21,8 @@ agendamentosRouter.post('/', (request, response) => {
       });
   }
 
-  const agendamento = new Agendamento(fornecedor, novaData);
-
-  agendamentos.push(agendamento);
+  const agendamento = agendamentosRepository
+    .create(fornecedor, data);
 
   return response.json(agendamento);
 });
