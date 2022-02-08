@@ -1,30 +1,34 @@
 import { Router } from 'express';
-import { startOfHour, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import AgendamentosRepository from '../repositories/AgendamentosRepository';
+import CriacaoAgendamentoService from '../services/CriacaoAgendamentoService';
 
 const agendamentosRouter = Router();
 const agendamentosRepository = new AgendamentosRepository();
 
+agendamentosRouter.get('/', (request, response) => {
+  const agendamentos = agendamentosRepository.todos();
+  return response.json(agendamentos)
+})
+
 agendamentosRouter.post('/', (request, response) => {
-  const { fornecedor, data } = request.body;
+  try {
+    const { fornecedor, data } = request.body;
 
-  const novaData = startOfHour(parseISO(data));
+    const novaData = parseISO(data) //Transformando uma data
 
-  const encontrarAgendamentoNaMesmaData =
-    agendamentosRepository.encontrarUmaDataEspecifica(novaData);
+    const criarAgendamento = new CriacaoAgendamentoService(agendamentosRepository)
 
-  if (encontrarAgendamentoNaMesmaData) {
-    return response
-      .status(400)
-      .json({
-        message: 'Este agendamento já está reservado'
-      });
+    const agendamento = criarAgendamento.execute({
+      data: novaData, fornecedor
+    })
+
+    return response.json(agendamento);
+  } catch (err: any) {
+    return response.status(400).json({
+      error: err.message
+    })
   }
-
-  const agendamento = agendamentosRepository
-    .create(fornecedor, data);
-
-  return response.json(agendamento);
 });
 
 export default agendamentosRouter;

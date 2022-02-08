@@ -2,12 +2,12 @@ import { uuid } from 'uuidv4';
 
 class Agendamento {
   id: string;
-  forcedor: string;
+  fornecedor: string;
   data: Date;
 
-  constructor(forncedor: string, data: Date) {
+  constructor({ fornecedor, data }: Omit<Agendamento, 'id'>) {
     this.id = uuid();
-    this.forcedor = forncedor;
+    this.fornecedor = fornecedor;
     this.data = data;
   }
 }
