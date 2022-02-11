@@ -100,4 +100,19 @@ C:\> netstat -a -b
 
 O docker ele não ficará rodando na sua máquina eternamente, quando você fazer o desligamento do computador ou reiniciar a máquina. Provavelmente o docker irá parar sua image. 
 
-Quando rodar o comandao ``` docker ps ``` não vai encontrar nada. Para ficar online novamente, necessário fazer o comando ```docker ps -a``` para mostrar uma lista de todas as imagens, após isso pegar o "CONTAINER ID" e roda o comando ```docker start id``` ou para parar a imagem roda ```docker stop id```. O "id" ele se caracteriza com vários números.   
+Quando rodar o comandao ``` docker ps ``` não vai encontrar nada. Para ficar online novamente, necessário fazer o comando ```docker ps -a``` para mostrar uma lista de todas as imagens, após isso pegar o "CONTAINER ID" e roda o comando ```docker start id``` ou para parar a imagem roda ```docker stop id```. O "id" ele se caracteriza com vários números.
+
+<h3>Configurando TypeORM</h3>
+
+Iremos criar um arquivo de configuração o typeORM chama esse arquivo de "ormconfig.json"
+
+```
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "", //nome do banco
+  "password": "", //senha do banco
+  "database": "" //nome do database criando no postbird
+}
+```
