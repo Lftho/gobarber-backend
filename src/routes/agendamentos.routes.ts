@@ -3,25 +3,28 @@ import { parseISO } from 'date-fns';
 import AgendamentosRepository from '../repositories/AgendamentosRepository';
 import CriacaoAgendamentoService from '../services/CriacaoAgendamentoService';
 
-const agendamentosRouter = Router();
-const agendamentosRepository = new AgendamentosRepository();
+import { getCustomRepository } from 'typeorm'
 
-agendamentosRouter.get('/', (request, response) => {
-  const agendamentos = agendamentosRepository.todos();
-  return response.json(agendamentos)
+const agendamentosRouter = Router();
+
+agendamentosRouter.get('/', async (request, response) => {
+  const agendamentosRepository = getCustomRepository(AgendamentosRepository);
+  const agendamentos = await agendamentosRepository.find();
+
+  return response.json(agendamentos);
 })
 
-agendamentosRouter.post('/', (request, response) => {
+agendamentosRouter.post('/', async (request, response) => {
   try {
     const { fornecedor, data } = request.body;
 
-    const novaData = parseISO(data) //Transformando uma data
+    const novaData = parseISO(data); //Transformando uma data
 
-    const criarAgendamento = new CriacaoAgendamentoService(agendamentosRepository)
+    const criarAgendamento = new CriacaoAgendamentoService();
 
-    const agendamento = criarAgendamento.execute({
+    const agendamento = await criarAgendamento.execute({
       data: novaData, fornecedor
-    })
+    });
 
     return response.json(agendamento);
   } catch (err: any) {

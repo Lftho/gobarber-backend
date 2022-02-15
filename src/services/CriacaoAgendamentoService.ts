@@ -2,6 +2,9 @@ import { startOfHour } from "date-fns";
 import Agendamento from "../models/Agendamento";
 import AgendamentosRepository from "../repositories/AgendamentosRepository";
 
+
+import { getCustomRepository } from 'typeorm'
+
 interface RequestDTO {
   fornecedor: string;
   data: Date;
@@ -12,30 +15,26 @@ interface RequestDTO {
  */
 
 class CriacaoAgendamentoService {
-  private agendamentosRepository: AgendamentosRepository;
+  public async execute({ fornecedor, data }: RequestDTO): Promise<Agendamento> {
+    const agendamentosRepository = getCustomRepository(AgendamentosRepository);
 
-  constructor(agendamentosRepository: AgendamentosRepository) {
-    this.agendamentosRepository = agendamentosRepository
-  }
-
-
-  public execute({
-    fornecedor, data
-  }: RequestDTO): Agendamento {
     const agendamentoData = startOfHour(data);
 
     const encontrarAgendamentoNaMesmaData =
-      this.agendamentosRepository.encontrarUmaDataEspecifica(agendamentoData);
+      await agendamentosRepository
+        .encontrarUmaDataEspecifica(agendamentoData);
 
     if (encontrarAgendamentoNaMesmaData) {
       throw Error('Este agendamento já está reservado');
     }
 
-    const agendamento = this.agendamentosRepository
-      .criar({
+    const agendamento = agendamentosRepository
+      .create({
         fornecedor,
         data: agendamentoData,
       });
+
+    await agendamentosRepository.save(agendamento)
 
     return agendamento;
   }

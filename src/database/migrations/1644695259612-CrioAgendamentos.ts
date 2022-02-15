@@ -13,9 +13,10 @@ export class CrioAgendamentos1644695259612 implements MigrationInterface {
                         type: 'varchar',
                         isPrimary: true,
                         generationStrategy: 'uuid',
+                        default: 'uuid_generate_v4()',
                     },
                     {
-                        name: 'forncedor',
+                        name: 'fornecedor',
                         type: 'varchar',
                         isNullable: false
                     },
