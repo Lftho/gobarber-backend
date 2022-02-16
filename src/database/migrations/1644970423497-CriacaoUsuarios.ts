@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
-export class CrioAgendamentos1644695259612 implements MigrationInterface {
+export default class CriacaoUsuarios1644970423497 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         //executando algo novo
         await queryRunner.createTable(
             new Table({
-                name: 'agendamentos',
+                name: 'usuarios',
                 columns: [
                     {
                         name: 'id',
@@ -16,12 +16,17 @@ export class CrioAgendamentos1644695259612 implements MigrationInterface {
                         default: 'uuid_generate_v4()',
                     },
                     {
-                        name: 'fornecedor',
+                        name: 'nome',
                         type: 'varchar',
                     },
                     {
-                        name: 'data',
-                        type: 'timestamp with time zone',
+                        name: 'email',
+                        type: 'varchar',
+                        isUnique: true,
+                    },
+                    {
+                        name: 'senha',
+                        type: 'varchar'
                     },
                     {
                         name: 'created_at',
@@ -40,7 +45,7 @@ export class CrioAgendamentos1644695259612 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         //removendo  esse algo novo 
-        await queryRunner.dropTable('agendamentos')
+        await queryRunner.dropTable('usuarios')
     }
 
 }
